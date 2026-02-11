@@ -8,7 +8,7 @@ import DataTable from '@/components/ui/DataTable';
 import Modal from '@/components/ui/Modal';
 import SuratKeluarForm from '@/components/forms/SuratKeluarForm';
 import { SuratKeluar } from '@/types';
-import { formatDateShort, getSifatColor, truncateText } from '@/lib/utils';
+import { formatDateShort, getSifatColor, truncateText, exportToCSV } from '@/lib/utils';
 
 // Data surat keluar - akan diisi dari database
 const initialSuratKeluar: SuratKeluar[] = [];

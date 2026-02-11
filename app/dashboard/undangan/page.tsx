@@ -8,7 +8,7 @@ import DataTable from '@/components/ui/DataTable';
 import Modal from '@/components/ui/Modal';
 import UndanganForm from '@/components/forms/UndanganForm';
 import { Undangan } from '@/types';
-import { formatDateShort, getStatusColor, truncateText } from '@/lib/utils';
+import { formatDateShort, getStatusColor, truncateText, exportToCSV } from '@/lib/utils';
 
 // Data undangan - akan diisi dari database
 const initialUndangan: Undangan[] = [];
@@ -185,7 +185,10 @@ export default function UndanganPage() {
                             <Filter size={18} />
                             <span>Filter</span>
                         </button>
-                        <button className="btn-secondary flex items-center gap-2">
+                        <button
+                            className="btn-secondary flex items-center gap-2"
+                            onClick={() => exportToCSV(undanganList, 'undangan-rapat')}
+                        >
                             <Download size={18} />
                             <span>Export</span>
                         </button>

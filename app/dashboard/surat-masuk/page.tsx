@@ -8,7 +8,7 @@ import DataTable from '@/components/ui/DataTable';
 import Modal from '@/components/ui/Modal';
 import SuratMasukForm from '@/components/forms/SuratMasukForm';
 import { SuratMasuk } from '@/types';
-import { formatDateShort, getSifatColor, truncateText } from '@/lib/utils';
+import { formatDateShort, getSifatColor, truncateText, exportToCSV } from '@/lib/utils';
 
 const columns = [
     {
@@ -183,7 +183,10 @@ export default function SuratMasukPage() {
                             <Filter size={18} />
                             <span>Filter</span>
                         </button>
-                        <button className="btn-secondary flex items-center gap-2">
+                        <button
+                            className="btn-secondary flex items-center gap-2"
+                            onClick={() => exportToCSV(suratList, 'surat-masuk')}
+                        >
                             <Download size={18} />
                             <span>Export</span>
                         </button>
