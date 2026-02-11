@@ -60,6 +60,20 @@ const columns = [
             <span className={`badge ${getSifatColor(value)}`}>{value}</span>
         ),
     },
+    {
+        key: 'fileUrl',
+        label: 'File',
+        width: '60px',
+        render: (value: string) => value ? (
+            <div className="flex justify-center">
+                <Mail className="text-primary-500" size={18} />
+            </div>
+        ) : (
+            <div className="flex justify-center">
+                <span className="text-gray-300">-</span>
+            </div>
+        ),
+    },
 ];
 
 export default function SuratMasukPage() {

@@ -157,7 +157,7 @@ export default function DataTable<T extends { id: string }>({
                                 </th>
                             ))}
                             {(onView || onEdit || onDelete) && (
-                                <th className="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider w-24">
+                                <th className="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider w-32">
                                     Aksi
                                 </th>
                             )}

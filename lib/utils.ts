@@ -128,3 +128,31 @@ export function extractGoogleDriveFileId(url: string): string | null {
     const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
     return match ? match[1] : null;
 }
+// Export to CSV
+export function exportToCSV(data: any[], filename: string) {
+    if (data.length === 0) return;
+
+    const headers = Object.keys(data[0]).join(',');
+    const rows = data.map(row => {
+        return Object.values(row).map(value => {
+            if (typeof value === 'string') {
+                return `"${value.replace(/"/g, '""')}"`;
+            }
+            return value;
+        }).join(',');
+    });
+
+    const csvContent = [headers, ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+
+    if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `${filename}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
