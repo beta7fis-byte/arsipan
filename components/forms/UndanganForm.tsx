@@ -30,8 +30,8 @@ export default function UndanganForm({ initialData, onSubmit, onCancel }: Undang
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleFileSelect = (file: File) => {
-        setFormData({ ...formData, fileUrl: `https://drive.google.com/file/d/${Date.now()}/view` });
+    const handleFileSelect = (url: string) => {
+        setFormData({ ...formData, fileUrl: url });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {

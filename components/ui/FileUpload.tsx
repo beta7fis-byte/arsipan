@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, File, X, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface FileUploadProps {
-    onFileSelect: (file: File) => void;
+    onFileSelect: (url: string) => void;
     accept?: string;
     maxSize?: number; // in MB
     disabled?: boolean;
@@ -23,7 +23,7 @@ export default function FileUpload({
     const [uploadProgress, setUploadProgress] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
 
-    const handleFile = useCallback((selectedFile: File) => {
+    const handleFile = useCallback(async (selectedFile: File) => {
         setError(null);
 
         // Check file size
@@ -51,18 +51,32 @@ export default function FileUpload({
 
         setFile(selectedFile);
         setIsUploading(true);
+        setUploadProgress(20);
 
-        // Simulate upload progress
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += 10;
-            setUploadProgress(progress);
-            if (progress >= 100) {
-                clearInterval(interval);
-                setIsUploading(false);
-                onFileSelect(selectedFile);
+        try {
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            const response = await fetch(`/api/upload?filename=${encodeURIComponent(selectedFile.name)}`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.error || 'Gagal mengupload file');
             }
-        }, 100);
+
+            setUploadProgress(100);
+            setIsUploading(false);
+            onFileSelect(result.data.fileUrl); // Pass the real URL back
+        } catch (err: any) {
+            console.error('Upload error:', err);
+            setError(err.message || 'Gagal mengupload file ke server');
+            setIsUploading(false);
+            setFile(null);
+        }
     }, [maxSize, accept, onFileSelect]);
 
     const handleDragOver = useCallback((e: React.DragEvent) => {

@@ -33,12 +33,10 @@ export default function SuratMasukForm({ initialData, onSubmit, onCancel }: Sura
         });
     };
 
-    const handleFileSelect = (file: File) => {
-        // In production, this would upload to Google Drive and get the URL
-        console.log('File selected:', file.name);
+    const handleFileSelect = (url: string) => {
         setFormData({
             ...formData,
-            fileUrl: `https://drive.google.com/file/d/${Date.now()}/view`,
+            fileUrl: url,
         });
     };
 
