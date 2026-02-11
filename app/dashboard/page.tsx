@@ -8,14 +8,33 @@ import ActivityChart from '@/components/dashboard/ActivityChart';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import AgendaWidget from '@/components/dashboard/AgendaWidget';
 
+import { useState, useEffect } from 'react';
+
 export default function DashboardPage() {
-    // Stats data - akan terupdate dari database
-    const stats = {
+    const [stats, setStats] = useState({
         suratMasukBulanIni: 0,
         suratKeluarBulanIni: 0,
         undanganBulanIni: 0,
         totalArsip: 0,
-    };
+    });
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchStats() {
+            try {
+                const res = await fetch('/api/dashboard/stats');
+                const json = await res.json();
+                if (json.success) {
+                    setStats(json.data.stats);
+                }
+            } catch (error) {
+                console.error('Failed to fetch dashboard stats:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchStats();
+    }, []);
 
     return (
         <div className="min-h-screen">

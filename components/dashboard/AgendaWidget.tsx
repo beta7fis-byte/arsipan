@@ -12,9 +12,7 @@ interface Agenda {
     status: 'ongoing' | 'upcoming' | 'done';
 }
 
-// Data agenda - akan diisi dari database
-const todayAgenda: Agenda[] = [];
-
+import { useState, useEffect } from 'react';
 
 const statusStyles = {
     done: { label: 'Selesai', bg: 'bg-gray-100', text: 'text-gray-600' },
@@ -23,6 +21,22 @@ const statusStyles = {
 };
 
 export default function AgendaWidget() {
+    const [todayAgenda, setTodayAgenda] = useState<Agenda[]>([]);
+
+    useEffect(() => {
+        async function fetchAgenda() {
+            try {
+                const res = await fetch('/api/dashboard/stats');
+                const json = await res.json();
+                if (json.success) {
+                    setTodayAgenda(json.data.agenda);
+                }
+            } catch (error) {
+                console.error('Failed to fetch agenda:', error);
+            }
+        }
+        fetchAgenda();
+    }, []);
     const today = new Date().toLocaleDateString('id-ID', {
         weekday: 'long',
         day: 'numeric',

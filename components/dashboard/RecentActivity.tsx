@@ -13,42 +13,7 @@ interface Activity {
     user: string;
 }
 
-// Data aktivitas - akan diisi dari database
-const recentActivities: Activity[] = [
-    {
-        id: '1',
-        type: 'masuk',
-        title: 'Surat dari Dinas Kesehatan',
-        description: 'Perihal: Koordinasi Pelaksanaan Vaksinasi Booster',
-        timestamp: new Date().toISOString(),
-        user: 'Admin',
-    },
-    {
-        id: '2',
-        type: 'undangan',
-        title: 'Rapat Koordinasi Bidang Gatrik',
-        description: 'Tempat: Ruang Rapat Lt. 2',
-        timestamp: new Date(Date.now() - 3600000).toISOString(),
-        user: 'Staff',
-    },
-    {
-        id: '3',
-        type: 'keluar',
-        title: 'Surat ke Sekda Prov Kalsel',
-        description: 'Perihal: Laporan Capaian Kinerja Triwulan IV',
-        timestamp: new Date(Date.now() - 7200000).toISOString(),
-        user: 'Admin',
-    },
-    {
-        id: '4',
-        type: 'masuk',
-        title: 'Surat dari PT. PLN (Persero)',
-        description: 'Perihal: Permohonan Izin Melintas Jaringan',
-        timestamp: new Date(Date.now() - 86400000).toISOString(),
-        user: 'Staff',
-    },
-];
-
+import { useState, useEffect } from 'react';
 
 const iconMap = {
     masuk: { icon: Mail, color: 'text-blue-500', bg: 'bg-blue-100' },
@@ -57,6 +22,25 @@ const iconMap = {
 };
 
 export default function RecentActivity() {
+    const [recentActivities, setRecentActivities] = useState<Activity[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchActivity() {
+            try {
+                const res = await fetch('/api/dashboard/stats');
+                const json = await res.json();
+                if (json.success) {
+                    setRecentActivities(json.data.activities);
+                }
+            } catch (error) {
+                console.error('Failed to fetch activities:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchActivity();
+    }, []);
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
