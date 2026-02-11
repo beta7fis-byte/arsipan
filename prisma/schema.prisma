@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SuratMasuk {
+  id            String   @id @default(uuid())
+  noAgenda      Int      @default(autoincrement())
+  noSurat       String
+  tanggalSurat  String
+  tanggalTerima String
+  pengirim      String
+  perihal       String
+  sifat         String   @default("Biasa")
+  klasifikasi   String?
+  fileUrl       String?
+  createdAt     DateTime @default(now())
+  createdBy     String
+
+  @@map("surat_masuk")
+}
+
+model SuratKeluar {
+  id            String   @id @default(uuid())
+  noSurat       String
+  tanggalSurat  String
+  penerima      String
+  perihal       String
+  sifat         String   @default("Biasa")
+  klasifikasi   String?
+  fileUrl       String?
+  createdAt     DateTime @default(now())
+  createdBy     String
+
+  @@map("surat_keluar")
+}
+
+model Undangan {
+  id            String   @id @default(uuid())
+  noSurat       String
+  tanggalAcara  String
+  waktuAcara    String
+  tempat        String
+  pengirim      String
+  perihal       String
+  status        String   @default("Pending")
+  fileUrl       String?
+  createdAt     DateTime @default(now())
+  createdBy     String
+
+  @@map("undangan")
+}
+
+model User {
+  id        String @id @default(uuid())
+  username  String @unique
+  password  String
+  name      String
+  role      String @default("viewer")
+
+  @@map("users")
+}
