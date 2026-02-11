@@ -12,6 +12,7 @@ import {
     Edit,
     Trash2,
     FileText,
+    Download,
     MoreHorizontal,
 } from 'lucide-react';
 
@@ -205,6 +206,18 @@ export default function DataTable<T extends { id: string }>({
                                                         <Eye size={16} />
                                                     </button>
                                                 )}
+                                                {/* File Download Action */}
+                                                {(row as any).fileUrl && (
+                                                    <a
+                                                        href={(row as any).fileUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-green-50 text-gray-400 hover:text-green-600 transition-colors"
+                                                        title="Download File"
+                                                    >
+                                                        <Download size={16} />
+                                                    </a>
+                                                )}
                                                 {onEdit && (
                                                     <button
                                                         onClick={() => onEdit(row)}
@@ -263,8 +276,8 @@ export default function DataTable<T extends { id: string }>({
                                     key={pageNum}
                                     onClick={() => setCurrentPage(pageNum)}
                                     className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${currentPage === pageNum
-                                            ? 'bg-primary-500 text-white'
-                                            : 'border border-gray-200 hover:bg-gray-50'
+                                        ? 'bg-primary-500 text-white'
+                                        : 'border border-gray-200 hover:bg-gray-50'
                                         }`}
                                 >
                                     {pageNum}

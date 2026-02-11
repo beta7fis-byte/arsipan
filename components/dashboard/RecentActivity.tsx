@@ -64,14 +64,20 @@ export default function RecentActivity() {
             </div>
 
             <div className="space-y-4">
-                {recentActivities.length === 0 ? (
-                    <div className="text-center py-8">
+                {isLoading ? (
+                    <div className="flex flex-col items-center justify-center py-12 gap-3">
+                        <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+                        <p className="text-sm text-gray-500 font-medium">Memuat aktivitas...</p>
+                    </div>
+                ) : recentActivities.length === 0 ? (
+                    <div className="text-center py-8 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
                         <Clock className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                        <p className="text-gray-500">Belum ada aktivitas terbaru</p>
+                        <p className="text-gray-500 font-medium">Belum ada aktivitas terbaru</p>
+                        <p className="text-xs text-gray-400 mt-1">Input data untuk melihat riwayat di sini</p>
                     </div>
                 ) : (
                     recentActivities.map((activity, index) => {
-                        const IconConfig = iconMap[activity.type];
+                        const IconConfig = iconMap[activity.type] || iconMap.masuk;
                         const Icon = IconConfig.icon;
 
                         return (

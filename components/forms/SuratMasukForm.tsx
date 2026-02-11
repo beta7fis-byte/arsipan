@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Save, X } from 'lucide-react';
+import { Save, X, FileText, Upload } from 'lucide-react';
 import FileUpload from '@/components/ui/FileUpload';
 import { SuratMasuk } from '@/types';
 
@@ -25,6 +25,7 @@ export default function SuratMasukForm({ initialData, onSubmit, onCancel }: Sura
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showUpload, setShowUpload] = useState(!initialData?.fileUrl);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         setFormData({
@@ -184,9 +185,50 @@ export default function SuratMasukForm({ initialData, onSubmit, onCancel }: Sura
                 {/* File Upload */}
                 <div className="md:col-span-2 space-y-2">
                     <label className="text-sm font-medium text-gray-700">
-                        Upload Scan Surat (PDF/Gambar)
+                        Scan Surat (PDF/Gambar)
                     </label>
-                    <FileUpload onFileSelect={handleFileSelect} />
+
+                    {formData.fileUrl && !showUpload ? (
+                        <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl border border-blue-100">
+                            <div className="flex items-center gap-3 text-blue-700">
+                                <FileText size={20} />
+                                <div className="min-w-0">
+                                    <p className="text-sm font-medium truncate max-w-[200px] sm:max-w-md">
+                                        File sudah terlampir
+                                    </p>
+                                    <a
+                                        href={formData.fileUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-xs hover:underline text-blue-600"
+                                    >
+                                        Klik untuk melihat file
+                                    </a>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setShowUpload(true)}
+                                className="text-xs px-3 py-1.5 bg-white border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-1.5"
+                            >
+                                <Upload size={14} />
+                                Ganti File
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            <FileUpload onFileSelect={handleFileSelect} />
+                            {formData.fileUrl && (
+                                <button
+                                    type="button"
+                                    onClick={() => setShowUpload(false)}
+                                    className="text-xs text-gray-500 hover:text-gray-700"
+                                >
+                                    Batal ganti file
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
 

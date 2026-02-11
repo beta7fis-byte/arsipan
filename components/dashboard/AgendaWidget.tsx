@@ -20,8 +20,9 @@ const statusStyles = {
     upcoming: { label: 'Akan Datang', bg: 'bg-blue-100', text: 'text-blue-600' },
 };
 
-export default function AgendaWidget() {
+export function AgendaWidget() {
     const [todayAgenda, setTodayAgenda] = useState<Agenda[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         async function fetchAgenda() {
@@ -33,6 +34,8 @@ export default function AgendaWidget() {
                 }
             } catch (error) {
                 console.error('Failed to fetch agenda:', error);
+            } finally {
+                setIsLoading(false);
             }
         }
         fetchAgenda();
@@ -66,60 +69,65 @@ export default function AgendaWidget() {
             </div>
 
             <div className="space-y-4">
-                {todayAgenda.map((agenda, index) => {
-                    const status = statusStyles[agenda.status];
+                {isLoading ? (
+                    <div className="flex flex-col items-center justify-center py-12 gap-3">
+                        <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+                        <p className="text-sm text-gray-500 font-medium">Memuat agenda...</p>
+                    </div>
+                ) : todayAgenda.length === 0 ? (
+                    <div className="text-center py-8 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
+                        <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                        <p className="text-gray-500 font-medium">Tidak ada agenda hari ini</p>
+                    </div>
+                ) : (
+                    todayAgenda.map((agenda, index) => {
+                        const status = statusStyles[agenda.status];
 
-                    return (
-                        <motion.div
-                            key={agenda.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.3, delay: 0.1 * index }}
-                            className={`p-4 rounded-xl border-l-4 ${agenda.status === 'ongoing'
-                                ? 'border-l-green-500 bg-green-50/50'
-                                : agenda.status === 'upcoming'
-                                    ? 'border-l-blue-500 bg-blue-50/50'
-                                    : 'border-l-gray-300 bg-gray-50/50'
-                                } hover:shadow-md transition-shadow cursor-pointer group`}
-                        >
-                            <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${status.bg} ${status.text}`}>
-                                            {status.label}
-                                        </span>
+                        return (
+                            <motion.div
+                                key={agenda.id}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.3, delay: 0.1 * index }}
+                                className={`p-4 rounded-xl border-l-4 ${agenda.status === 'ongoing'
+                                    ? 'border-l-green-500 bg-green-50/50'
+                                    : agenda.status === 'upcoming'
+                                        ? 'border-l-blue-500 bg-blue-50/50'
+                                        : 'border-l-gray-300 bg-gray-50/50'
+                                    } hover:shadow-md transition-shadow cursor-pointer group`}
+                            >
+                                <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${status.bg} ${status.text}`}>
+                                                {status.label}
+                                            </span>
+                                        </div>
+                                        <h4 className="font-medium text-gray-800 group-hover:text-primary-600 transition-colors">
+                                            {agenda.title}
+                                        </h4>
+                                        <div className="mt-3 space-y-1">
+                                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                                                <Clock size={14} />
+                                                <span>{agenda.time}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                                                <MapPin size={14} />
+                                                <span>{agenda.location}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                                                <Users size={14} />
+                                                <span>{agenda.organizer}</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <h4 className="font-medium text-gray-800 group-hover:text-primary-600 transition-colors">
-                                        {agenda.title}
-                                    </h4>
-                                    <div className="mt-3 space-y-1">
-                                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                                            <Clock size={14} />
-                                            <span>{agenda.time}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                                            <MapPin size={14} />
-                                            <span>{agenda.location}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                                            <Users size={14} />
-                                            <span>{agenda.organizer}</span>
-                                        </div>
-                                    </div>
+                                    <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-primary-600 transition-colors" />
                                 </div>
-                                <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-primary-600 transition-colors" />
-                            </div>
-                        </motion.div>
-                    );
-                })}
+                            </motion.div>
+                        );
+                    })
+                )}
             </div>
-
-            {todayAgenda.length === 0 && (
-                <div className="text-center py-8">
-                    <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-gray-500">Tidak ada agenda hari ini</p>
-                </div>
-            )}
-        </motion.div>
+        </motion.div >
     );
 }
